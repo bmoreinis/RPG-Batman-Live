@@ -119,6 +119,9 @@ function getScene(record_id, resume = false) {
           case "Roll":
             window.open("./characters/index.html",'_blank');
             break;
+            case "Melee1":
+              window.open("./melee/index.html",'_blank');
+              break;
           default:
             console.log('special:', data.fields.special);
         }
