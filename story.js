@@ -117,7 +117,7 @@ function getScene(record_id, resume = false) {
             window.open("http://mastermind-averages.bmoreinis.repl.co/", '_blank');  
             break;
           case "Roll":
-            window.open("https://bmoreinis.github.io/RPG-Hybrid-Batman/characters/",'_blank');
+            window.open("./characters/index.html",'_blank');
             break;
           default:
             console.log('special:', data.fields.special);
