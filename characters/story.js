@@ -159,7 +159,7 @@ function picker(){
   for (let choice=0; choice < classData.length; choice++){
     modalText = classDescription(classList[choice]);
     classText.push(modalText);
-    addStory+="<li> "+classes[classList[choice]][0]+ ": <button onclick=\"showModal(classText["+choice+"]);\">About</button> <button onclick=\"showModal("'You picked '+classes[classList[choice]][0]");\">Select</button>";
+    addStory+="<li> "+classes[classList[choice]][0]+ ": <button onclick=\"showModal(classText["+choice+"]);\">About</button>";
   }
   addStory+="</ul>";
   story(addStory);
