@@ -44,6 +44,14 @@ var maxRolls = 3; // how many rerolls? Default = 3
 var rollCount = 0; // which reroll are we on?
 var modalText = "Houston, we have a problem defining modalText";
 let classText = [];
+var classImage = [
+  "Bale.jpeg",
+  "Pattinson.jpg",
+  "Keaton.jpg",
+  "Arnett.jpg",
+  "Affleck.jpg",
+  "Conroy.jpg",
+];
 
 function checkAnswersNoDB(answer, classSelection) {
   console.log("checkAnswersNoDB, classSelection =", classSelection);
@@ -260,6 +268,8 @@ function classDescription(classID) {
   let classDesc = "Name: " + classes[parseInt(classID)][0] + " <br>";
   classDesc +=
     "Batman Movies: " + classes[parseInt(classID)][1].toString() + " <br>";
+  classDesc += "<img src=" + classImage[classID] + "><br>";
+  classDesc += "<button onclick = 'hideModal()'>close</button>";
   return classDesc;
 }
 
