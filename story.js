@@ -5,14 +5,16 @@ window.onload = start;
 // Replace with your own AirTable API key.
 // Normally, you will want to keep this private.
 var pw = prompt("Enter password to play");
-const key = 'keyJLBdH3kt'+pw;
-const app_id = 'appUOVbjlWQtGuhQ2';
+localStorage.clear();
+localStorage.setItem("pw", pw);
+const key = "keyJLBdH3kt" + pw;
+const app_id = "appUOVbjlWQtGuhQ2";
 const base_url = `https://api.airtable.com/v0/${app_id}`;
 
 // Change this to match ID in your AirTable.
-const STORY_INTRO_ID = 'recj6DMombutWdiAq';
-const CHARACTER_SELECT_ID = 'recclANwLP6dJZ0zV'
-const OPENING_SCENE_ID = 'recnU9pSm7CZdfQ1L';
+const STORY_INTRO_ID = "recj6DMombutWdiAq";
+const CHARACTER_SELECT_ID = "recclANwLP6dJZ0zV";
+const OPENING_SCENE_ID = "recnU9pSm7CZdfQ1L";
 
 // Start story and make initial DB requests for opening scene, saved games,
 // and available characters.
@@ -22,22 +24,24 @@ function start() {
   const requests = [
     $.ajax({
       url: `${base_url}/scenes/${STORY_INTRO_ID}?api_key=${key}`,
-      type: 'GET'
+      type: "GET",
     }),
     $.ajax({
       url: `${base_url}/gameProgress?api_key=${key}`,
-      type: 'GET'
+      type: "GET",
     }),
     $.ajax({
-      url: `${base_url}/characters?api_key=${key}`
-    })
+      url: `${base_url}/characters?api_key=${key}`,
+    }),
   ];
   Promise.all(requests)
     .then(function (data) {
-      const choices = [{
-        choice: '* New Game',
-        target: config.OPTION_NEW_GAME
-      }];
+      const choices = [
+        {
+          choice: "* New Game",
+          target: config.OPTION_NEW_GAME,
+        },
+      ];
       const story = data[0].fields.story;
       data[1].records.forEach(function (record) {
         let choice = `${record.fields.character} - Turn ${record.fields.turnNumber}`;
@@ -65,21 +69,22 @@ function saveGame() {
       gold: gameProgress.gold,
       hitPoints: gameProgress.hitPoints,
       flags: gameProgress.flags,
-      turnNumber: gameProgress.turnNumber
-    }
+      turnNumber: gameProgress.turnNumber,
+    },
   };
   let url = `${base_url}/gameProgress?api_key=${key}`;
-  let type = 'POST';
+  let type = "POST";
 
   if (gameProgress.id) {
     url = `${base_url}/gameProgress/${gameProgress.id}?api_key=${key}`;
-    type = 'PATCH';
+    type = "PATCH";
   }
-  buttonElement.innerHTML = 'Saving game...';
+  buttonElement.innerHTML = "Saving game...";
   $.ajax({ url, type, data: progressData })
     .done(function (data) {
-      buttonElement.innerHTML = 'What will you do?';
+      buttonElement.innerHTML = "What will you do?";
       gameProgress.id = data.id;
+      localStorage.setItem("game_id", data.id);
       gameProgress.saveNumber += 1;
       gameData.savedGames[data.id] = data.fields;
       gameData.touchedSinceSave = false;
@@ -104,7 +109,7 @@ function getScene(record_id, resume = false) {
 
   $.ajax({
     url: `${base_url}/scenes/${record_id}?api_key=${key}`,
-    type: 'GET'
+    type: "GET",
   })
     .done(function (data) {
       // Once AJAX request returns data, we destructure
@@ -112,28 +117,33 @@ function getScene(record_id, resume = false) {
       let choices = [];
       let { title, story, special } = data.fields;
       if (data.fields.special) {
-        switch(special) {
+        switch (special) {
           case "MM":
-            window.open("http://mastermind-averages.bmoreinis.repl.co/", '_blank');  
+            window.open(
+              "http://mastermind-averages.bmoreinis.repl.co/",
+              "_blank"
+            );
             break;
           case "Roll":
-            window.open("./characters/index.html",'_blank');
+            window.open("./characters/index.html", "_blank");
             break;
-            case "Melee1":
-              window.open("./melee/index.html",'_blank');
-              break;
+          case "Melee1":
+            window.open("./melee/index.html", "_blank");
+            break;
           default:
-            console.log('special:', data.fields.special);
+            console.log("special:", data.fields.special);
         }
       }
       // Don't bother if the scene doesn't have any choices.
       else if (data.fields.choices) {
         // Collect AirTable queries for every choice into an array.
         for (let idx = 0; idx < data.fields.choices.length; idx++) {
-          choices.push($.ajax({
-          url: `${base_url}/choices/${data.fields.choices[idx]}?api_key=${key}`,
-            type: 'GET'
-          }));
+          choices.push(
+            $.ajax({
+              url: `${base_url}/choices/${data.fields.choices[idx]}?api_key=${key}`,
+              type: "GET",
+            })
+          );
         }
         // Use Promise.all() to wait until every query in the array
         // has been returned before proceeding.
@@ -144,14 +154,14 @@ function getScene(record_id, resume = false) {
               // Destructure the necessary fields.
               // targets is an array
               console.log(data[idx]);
-              let {
-                choice,
-                targets,
-                flag,
-                requiredFlags,
-                blockingFlags } = data[idx].fields;
+              let { choice, targets, flag, requiredFlags, blockingFlags } =
+                data[idx].fields;
               if (optionIsVisible(requiredFlags, blockingFlags)) {
-                targetArray.push({ choice: choice, target: targets[0], flag: flag ? flag[0] : null });
+                targetArray.push({
+                  choice: choice,
+                  target: targets[0],
+                  flag: flag ? flag[0] : null,
+                });
               }
             }
             displayStory(story);
@@ -177,36 +187,32 @@ function getNewOrSavedStory(value) {
     gameData.currentGameState = config.SELECT_CHARACTER;
     const choices = [];
     $.ajax({
-        url: `${base_url}/scenes/${CHARACTER_SELECT_ID}?api_key=${key}`,
-        type: 'GET'
-      })
-        .done(function (data) {
-          displayStory(data.fields.story);
-          gameData.characters.forEach(function (character) {
-            let {
-              name,
-              charClass,
-              firstScene,
-              flag
-            } = character.fields;
-            let choice = `${name} the ${charClass}`;
-            choices.push({ choice, target: firstScene[0], flag: flag[0] });
-          });
-          setOptions(choices);
-        })
-        .fail(function (err) {
-          console.log(err);
+      url: `${base_url}/scenes/${CHARACTER_SELECT_ID}?api_key=${key}`,
+      type: "GET",
+    })
+      .done(function (data) {
+        displayStory(data.fields.story);
+        gameData.characters.forEach(function (character) {
+          let { name, charClass, firstScene, flag } = character.fields;
+          let choice = `${name} the ${charClass}`;
+          choices.push({ choice, target: firstScene[0], flag: flag[0] });
         });
+        setOptions(choices);
+      })
+      .fail(function (err) {
+        console.log(err);
+      });
   } else if (gameData.savedGames[value]) {
     gameData.currentGameState = config.PLAY_GAME;
     resumeGame(value, gameData.savedGames[value]);
   } else {
-    console.log('ERROR: Saved game could not be found.');
+    console.log("ERROR: Saved game could not be found.");
   }
 }
 
 // Build current game progress data from saved game data.
 function resumeGame(record_id, progressData) {
+  localStorage.setItem("game_id", record_id);
   gameProgress.id = record_id;
   gameProgress.character = progressData.character;
   gameProgress.gold = parseInt(progressData.gold);
@@ -220,12 +226,12 @@ function resumeGame(record_id, progressData) {
 function getCharacterSelection(value) {
   let character = gameData.characters.find(function (element) {
     return element.fields.firstScene[0] === value;
-  })
+  });
   if (character) {
     gameData.currentGameState = config.PLAY_GAME;
     gameProgress.character = `${character.fields.name} the ${character.fields.charClass}`;
     getScene(value);
   } else {
-    console.log('ERROR: Character could not be found.');
+    console.log("ERROR: Character could not be found.");
   }
 }
