@@ -64,14 +64,23 @@ function start() {
 // Save a game. Makes a POST request to the base on the first save for
 // a character, and PATCH requests on follow-up saves.
 function saveGame() {
+  console.log("saveGame:", gameProgress);
   const progressData = {
     fields: {
       character: gameProgress.character,
-      currentScene: [gameProgress.currentScene],
-      gold: gameProgress.gold,
-      hitPoints: gameProgress.hitPoints,
+      currentScene: gameProgress.currentScene,
+      Au: gameProgress.gold,
+      HP: gameProgress.hitPoints,
+      AC: gameProgress.AC,
       flags: gameProgress.flags,
       turnNumber: gameProgress.turnNumber,
+      Class: gameProgress.Class,
+      Strength: gameProgress.Strength,
+      Intelligence: gameProgress.Intelligence,
+      Wisdom: gameProgress.Wisdom,
+      Constitution: gameProgress.Constitution,
+      Dexterity: gameProgress.Dexterity,
+      Charisma: gameProgress.Charisma,
     },
   };
   let url = `${base_url}/gameProgress?api_key=${key}`;
@@ -192,7 +201,7 @@ function getInterstitialScene(special) {
 
   switch (special) {
     case "Roll":
-      // gameData.currentGameState = config.ROLLING_CHARACTER;
+      gameData.currentGameState = config.ROLLING_CHARACTER;
       scene = FINISH_CHAR_CREATION_ID;
       break;
     // case "Melee1":
@@ -243,6 +252,20 @@ function getNewOrSavedStory(value) {
   } else {
     console.log("ERROR: Saved game could not be found.");
   }
+}
+
+function continueGame() {
+  const game_id = localStorage.getItem("game_id");
+  console.log("continueGame:", game_id);
+  $.ajax({ url: `${base_url}/gameProgress/${game_id}?api_key=${key}` })
+    .done(function (data) {
+      console.log("continueGame", data);
+      gameData.currentGameState = config.PLAY_GAME;
+      resumeGame(game_id, data.fields);
+    })
+    .fail(function (err) {
+      console.log("continueGame()", err);
+    });
 }
 
 // Build current game progress data from saved game data.

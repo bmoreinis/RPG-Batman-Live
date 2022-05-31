@@ -72,6 +72,7 @@ function optionIsVisible(requiredFlags, blockingFlags) {
 
 // Use game state to determine how to handle the button click.
 function handleClick() {
+  console.log("handleClick:", gameData.currentGameState);
   switch (gameData.currentGameState) {
     case config.START_GAME:
       getNewOrSavedStory(dropdown.value);
@@ -83,7 +84,8 @@ function handleClick() {
       if (localStorage.getItem("rollingChar")) {
         doNothing();
       } else {
-        getNewOrSavedStory();
+        console.log("Continuing game...");
+        continueGame();
         // gameData.currentGameState = config.PLAY_GAME;
         // getScene(FINISH_CHAR_CREATION_ID);
       }
