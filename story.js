@@ -15,6 +15,8 @@ const base_url = `https://api.airtable.com/v0/${app_id}`;
 const STORY_INTRO_ID = "recj6DMombutWdiAq";
 const CHARACTER_SELECT_ID = "recclANwLP6dJZ0zV";
 const OPENING_SCENE_ID = "recnU9pSm7CZdfQ1L";
+const FINISH_CHAR_CREATION_ID = "recniwZTG3UnV97Hr";
+const OPENING_BATMAN_SCENE = "recIjdKteWhFUXz96";
 
 // Start story and make initial DB requests for opening scene, saved games,
 // and available characters.
@@ -116,6 +118,7 @@ function getScene(record_id, resume = false) {
       // it and store it in variables.
       let choices = [];
       let { title, story, special } = data.fields;
+      console.log("getScene():", data.fields);
       if (data.fields.special) {
         switch (special) {
           case "MM":
@@ -125,6 +128,8 @@ function getScene(record_id, resume = false) {
             );
             break;
           case "Roll":
+            localStorage.setItem("rollingChar", "true");
+            getInterstitialScene(special);
             window.open("./characters/index.html", "_blank");
             break;
           case "Melee1":
@@ -178,6 +183,36 @@ function getScene(record_id, resume = false) {
     })
     .fail(function (err) {
       console.log(err);
+    });
+}
+
+// Get pause scene for character creation and melee.
+function getInterstitialScene(special) {
+  let scene = "";
+
+  switch (special) {
+    case "Roll":
+      // gameData.currentGameState = config.ROLLING_CHARACTER;
+      scene = FINISH_CHAR_CREATION_ID;
+      break;
+    // case "Melee1":
+    //   break;
+    default:
+      console.log("getInterstitialScene(): bad argument:", special);
+  }
+
+  // Set target to Batman Begins
+  setOptions([
+    { choice: "Continue", target: OPENING_BATMAN_SCENE, flag: null },
+  ]);
+  $.ajax({
+    url: `${base_url}/scenes/${scene}?api_key=${key}`,
+  })
+    .done(function (data) {
+      displayStory(data.fields.story);
+    })
+    .fail(function (err) {
+      console.log("getInterstitialScene():", err);
     });
 }
 

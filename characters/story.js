@@ -106,6 +106,7 @@ function saveGameCharacter(answer) {
   buttonElement.innerHTML = "Saving game...";
   $.ajax({ url, type, data: progressData })
     .done(function (data) {
+      localStorage.removeItem("rollingChar");
       localStorage.setItem("game_id", data.id);
       window.close();
     })

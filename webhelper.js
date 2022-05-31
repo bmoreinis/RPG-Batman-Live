@@ -32,6 +32,7 @@ var gameProgress = {
 var config = {
   START_GAME: "START_GAME",
   SELECT_CHARACTER: "SELECT_CHARACTER",
+  ROLLING_CHARACTER: "ROLLING_CHARACTER",
   PLAY_GAME: "PLAY_GAME",
   GAME_OVER: "GAME_OVER",
   OPTION_NEW_GAME: "OPTION_NEW_GAME",
@@ -78,6 +79,13 @@ function handleClick() {
     case config.SELECT_CHARACTER:
       getCharacterSelection(dropdown.value);
       break;
+    case config.ROLLING_CHARACTER:
+      if (localStorage.getItem("rollingChar")) {
+        doNothing();
+      } else {
+        getScene(FINISH_CHAR_CREATION_ID);
+      }
+      break;
     default:
       if (dropdown.value === config.OPTION_SAVE_GAME) {
         saveGame();
@@ -85,6 +93,10 @@ function handleClick() {
         getScene(dropdown.value);
       }
   }
+}
+
+function doNothing() {
+  return true;
 }
 
 function addOptionFlag(target, flag) {
