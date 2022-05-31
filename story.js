@@ -250,10 +250,18 @@ function resumeGame(record_id, progressData) {
   localStorage.setItem("game_id", record_id);
   gameProgress.id = record_id;
   gameProgress.character = progressData.character;
-  gameProgress.gold = parseInt(progressData.gold);
-  gameProgress.hitPoints = parseInt(progressData.hitPoints);
+  gameProgress.gold = parseInt(progressData.Au);
+  gameProgress.hitPoints = parseInt(progressData.HP);
+  gameProgress.AC = parseInt(progressData.AC);
   gameProgress.flags = [].concat(progressData.flags);
   gameProgress.turnNumber = parseInt(progressData.turnNumber);
+  gameProgress.Class = progressData.Class;
+  gameProgress.Strength = progressData.Strength;
+  gameProgress.Intelligence = progressData.Intelligence;
+  gameProgress.Wisdom = progressData.Wisdom;
+  gameProgress.Constitution = progressData.Constitution;
+  gameProgress.Dexterity = progressData.Dexterity;
+  gameProgress.Charisma = progressData.Charisma;
   getScene(progressData.currentScene, true);
 }
 
