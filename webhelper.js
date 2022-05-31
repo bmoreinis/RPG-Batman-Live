@@ -83,6 +83,7 @@ function handleClick() {
       if (localStorage.getItem("rollingChar")) {
         doNothing();
       } else {
+        gameData.currentGameState = config.PLAY_GAME;
         getScene(FINISH_CHAR_CREATION_ID);
       }
       break;

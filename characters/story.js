@@ -87,8 +87,11 @@ function saveGameCharacter(answer) {
     type = "PATCH";
   }
 
+  const OPENING_BATMAN_SCENE = "recIjdKteWhFUXz96";
   const progressData = {
     fields: {
+      turnNumber: 1,
+      currentScene: [OPENING_BATMAN_SCENE],
       character: `${answer} the Batman`,
       Class: answer,
       Strength: attributes[0][1],
