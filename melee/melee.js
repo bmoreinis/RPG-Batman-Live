@@ -187,6 +187,9 @@ function pcAttack(att){
     let storyText = inventory[0][att][3]+"Joker";
     let attRoll = customRoll(20,1);
     if (attRoll > 16){
+      if (att == 0 || att == 1){
+        actionWord();
+      }
       damage = customRoll(4,1)+customRoll(4,1)+inventory[0][att][1];
       storyText+= ". Critical hit! You deal "+damage+" damage.";
     }
@@ -194,6 +197,9 @@ function pcAttack(att){
       storyText+=". You slip up and miss.";
     }
     else if (attRoll + stats[0][0] >= stats[1][1]){
+      if (att == 0 || att == 1){
+        actionWord();
+      }
       damage = customRoll(4,1)+inventory[0][att][1];
       storyText+=", dealing "+damage+" damage.";
     }
@@ -258,4 +264,10 @@ function pcHeal(){
   if (hp[0] > 30) hp[0] = 30;
   choices = ["Ok"];
   setOptions(choices);
+}
+
+function actionWord(){
+  let actionModal = document.getElementById("actionModal");
+  actionModal.st
+  let imageId = customRoll(7,0);
 }
