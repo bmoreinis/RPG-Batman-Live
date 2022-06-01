@@ -160,18 +160,20 @@ function classOptions(){
 }
 
 function picker(){
-  classList = classOptions();
-  let classData = getClassData(classList);
-  let addStory="Which Batman shall you be?  Here are your options based on your rolls:<br><ul style=\"text-align:left;\">";
-  for (let choice=0; choice < classData.length; choice++){
-    modalText = classDescription(classList[choice]);
-    classText.push(modalText);
-    addStory+="<li> "+classes[classList[choice]][0]+ ": <button onclick=\"showModal(classText["+choice+"]);\">About</button>";
+  if (picking == 0){
+    classList = classOptions();
+    let classData = getClassData(classList);
+    let addStory="Which Batman shall you be?  Here are your options based on your rolls:<br><ul style=\"text-align:left;\">";
+    for (let choice=0; choice < classData.length; choice++){
+      modalText = classDescription(classList[choice]);
+      classText.push(modalText);
+      addStory+="<li> "+classes[classList[choice]][0]+ ": <button onclick=\"showModal(classText["+choice+"]);\">About</button>";
+    }
+    addStory+="</ul>";
+    story(addStory);
+    choices = getClassData(classList,0);
+    answer = setOptionsNoDB(choices);
   }
-  addStory+="</ul>";
-  story(addStory);
-  choices = getClassData(classList,0);
-  answer = setOptionsNoDB(choices);
 }
 
 function classDescription(classID){
@@ -203,4 +205,10 @@ function editTeam(answer){
     team[picking][1][i] = attributes[i][1];
   }
   alert(team[0].join(", "));
+  if (picking < 1){
+    picking++;
+    classList = [];
+    whichAttribute = 0;
+    roller();
+  }
 }
