@@ -18,6 +18,9 @@ var rollCount = 0; // which reroll are we on?
 var modalText = "Houston, we have a problem defining modalText";
 let classText = [];
 var classImage = ['Bale.jpeg','Pattinson.jpg','Keaton.jpg','Arnett.jpg','Affleck.jpg','Conroy.jpg'];
+//team array, 1: [batman,sidekick,sidekick] 2: [name,stats];
+var team = [["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]]];
+var picking = 0;
 
 
 function checkAnswersNoDB(answer) {
@@ -34,6 +37,8 @@ function checkAnswersNoDB(answer) {
     case "Start Over":
       restart();
       break;
+    default:
+      editTeam(answer);
     }
 }
 
@@ -192,3 +197,10 @@ function getClassData(array1,field){
   return classData;
 }
 
+function editTeam(answer){
+  team[picking][0] = answer;
+  for (let i = 0; i < 6; i++){
+    team[picking][1][i] = attributes[i][1];
+  }
+  alert(team[0].join(", "));
+}
