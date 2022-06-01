@@ -186,14 +186,14 @@ function pcAttack(att){
     let damage = 0;
     let storyText = inventory[0][att][3]+"Joker";
     let attRoll = customRoll(20,1);
-    if (attRoll > 16){
+    if (attRoll > 17){
       if (att == 0 || att == 1){
         actionWord();
       }
       damage = customRoll(4,1)+customRoll(4,1)+inventory[0][att][1];
       storyText+= ". Critical hit! You deal "+damage+" damage.";
     }
-    else if (attRoll < 5){
+    else if (attRoll < 3){
       storyText+=". You slip up and miss.";
     }
     else if (attRoll + stats[0][0] >= stats[1][1]){
@@ -237,13 +237,19 @@ function enemyAttack(att){
     let storyText = jokerInv[att][3];
     let attRoll = customRoll(20,1);
     if (attRoll > 18){
+      if (att == 0){
+        actionWord();
+      }
       damage = customRoll(4,1)+customRoll(4,1)+jokerInv[att][1];
       storyText+= ". Critical hit! You take "+damage+" damage.";
     }
-    else if (attRoll < 5){
+    else if (attRoll < 3){
       storyText+=". He misses, destracted from laughing about something.";
     }
     else if (attRoll + stats[1][0] >= stats[0][1]){
+      if (att == 0){
+        actionWord();
+      }
       damage = customRoll(4,1)+jokerInv[att][1];
       storyText+=", dealing "+damage+" damage.";
     }
@@ -267,7 +273,12 @@ function pcHeal(){
 }
 
 function actionWord(){
-  let actionModal = document.getElementById("actionModal");
-  actionModal.st
   let imageId = customRoll(7,0);
+  actionModal.innerHTML = "<img id='word' src="+actionImages[imageId]+">";
+  actionModal.style.display = "block";
+  let hide = setTimeout(hideWord,600);
+}
+
+function hideWord(){
+  actionModal.style.display = "none";
 }

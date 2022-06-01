@@ -2,6 +2,7 @@ var choices = [];
 var inventory = [[["Punch",5,null,"You punch "],["Punch",5,null,"You punch "],["Batarang",7,3,"You throw a batarang at "],["First-Aid Kit",4,5],["Smoke Pellets",null,2],["Impact Mines",7,3],["Sticky Glue Balls",null,2]],["Gold",null,50]]; //Stub array for now, but I made it so that it would take the gadget from the "attack" choices to show "Batarang: (inventory[0][1] Remaining)"
 var jokerInv = [["Punch",1,null,"Joker throws a punch",". You see it coming and dodge."],["Gun",3,6,"Joker fires his gun",". You block the bullet with your wrist."],["Tazer",4,null,"Joker uses his tazer",". You duck under your insulated cape."]];
 var actionImages = ['CRACK!.jpg','kapow.jpg','OOF.jpg','POW!!.jpg','SMASH!.jpg','WHAM!.jpg','ZWAP!.jpg'];
+var actionModal = document.getElementById("actionModal");
 
 function checkAnswers(answer) {
   switch(answer) {

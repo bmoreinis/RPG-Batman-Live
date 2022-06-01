@@ -134,3 +134,9 @@ td {
   margin-right: auto;
   display: none;
 }
+
+#word{
+  width: 400px;
+  height: 300px;
+  object-fit: contain;
+}
