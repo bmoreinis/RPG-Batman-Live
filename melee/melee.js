@@ -24,14 +24,13 @@ var classReq = [
   [4, 10, 4],
   [5, 12, 5],
 ];
-/* Class-related Melee Options */ 
 var classes = [
-  ["Christian Bale", "One Punch Knockout"],
-  ["Robert Pattinson", "Knows All The Answers"],
-  ["Michael Keaton", "Predicts Villain Behaviors"],
-  ["Will Arnett", "No Fall Damage"],
-  ["Ben Affleck",  "Can Escape Any Room"],
-  ["Kevin Conroy", "Soul Catching Voice"],
+  ["Christian Bale", ["Batman Begins", "The Dark Night"], "One Punch Knockout"],
+  ["Robert Pattinson", ["The Batman 2020"], "Knows All The Answers"],
+  ["Michael Keaton", ["Batman 1989"], "Predicts Villain Behaviors"],
+  ["Will Arnett", ["Lego Batman: The Movie"], "No Fall Damage"],
+  ["Ben Affleck", ["Batman vs. Superman"], "Can Escape Any Room"],
+  ["Kevin Conroy", ["Batman: The Killing Joke"], "Soul Catching Voice"],
 ];
 
 /* Bonus only applies on move or attack, not move+attack */
@@ -213,14 +212,12 @@ function turnChange() {
 }
 
 function victory() {
-  localStorage.setItem("meleeTarget", resultTargets.victorious);
   story("The Joker has been defeated. Justice is served.");
   choices = ["Done"];
   answer = setOptions(choices);
 }
 
 function defeat() {
-  localStorage.setItem("meleeTarget", resultTargets.defeated);
   story("Batman fainted. The Joker is free to continue his plan.");
   choices = ["Done"];
   answer = setOptions(choices);
@@ -231,19 +228,17 @@ function endMeleeAndSave() {
   const game_id = localStorage.getItem("game_id");
   const url = `${base_url}/gameProgress/${game_id}?api_key=${key}`;
   const type = "PATCH";
+  // Provide other fields that would need to be updated in Airtable at this point.
+  console.log("endMeleeAndSave():", hp[0]);
   const progressData = {
     fields: {
-      HP: meleeGameProgress.HP,
-      AC: meleeGameProgress.AC,
-      Au: meleeGameProgress.Au,
+      HP: 11,
     },
   };
-  console.log("endMeleeAndSave:", progressData);
 
   buttonElement.innerHTML = "Saving game...";
   $.ajax({ url, type, data: progressData })
     .done(function (data) {
-      localStorage.removeItem("inMelee");
       window.close();
     })
     .fail(function (err) {
@@ -251,9 +246,16 @@ function endMeleeAndSave() {
     });
 }
 
+/* Not Implemented */
+function nim() {
+  story("You won Nim");
+  choices = ["Great"];
+  answer = setOptions(choices);
+}
+
 function setup() {
   story(
-    "<i>For best results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something."
+    "You are on the top of Gotham Funland and you see the Joker planning something."
   );
   options = ["Confront Him", "~Wait and then Attack", "~Ask Robin"];
   setOptions(options);
