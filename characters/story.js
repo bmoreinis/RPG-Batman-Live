@@ -11,7 +11,7 @@ var attributes = [["Strength",0],["Intelligence",0],["Wisdom",0],["Constitution"
 // classReq = attributes[index], minimum value to qualify, classes[index]
 var classReq = [[0,13,0],[1,14,1],[2,9,2],[3,11,3],[4,10,4],[5,12,5]];
 var classes = [["Christian Bale",["Batman Begins", "The Dark Night"],"One Punch Knockout"],["Robert Pattinson",["The Batman 2020"],"Knows All The Answers"],["Michael Keaton",["Batman 1989"],"Predicts Villain Behaviors"],["Will Arnett",["Lego Batman: The Movie"],"No Fall Damage"],["Ben Affleck",["Batman vs. Superman"],"Can Escape Any Room"],["Kevin Conroy",["Batman: The Killing Joke"],"Soul Catching Voice"]];
-var sKClasses = [["Jason Todd",["Robin","Red Hood","Wingman"],"undefined"],["Terry McGinnis",["Batman Beyond"],"undefined"],["Barbara Gordon",["Batgirl","Oracle"],"undefined"],["Stephanie Brown",["Spoiler","Robin","Batgirl"],"undefined"],["Tim Drake",["Robin","Red Robin"],"undefined"],["Cassandra Cain",["Batgirl","Black Bat"],null],["Ace",["Bat-Hound"],null],["Katherine Kane",["Batwoman"],null],["Richard Grayson",["Robin","Nightwing"],null],["Damian Wayne",["Robin","Redbird"],null],["Alfred Pennyworth",["Penny-one"],null],["Elizabeth Kane",["Batgirl"],null]];
+var sKClasses = [["Jason Todd",["Robin","Red Hood","Wingman"],"undefined"],["Terry McGinnis",["Batman Beyond"],"undefined"],["Barbara Gordon",["Batgirl","Oracle"],"undefined"],["Stephanie Brown",["Spoiler","Robin","Batgirl"],"undefined"],["Tim Drake",["Robin","Red Robin"],"undefined"],["Cassandra Cain",["Batgirl","Black Bat","Kasumi"],null],["Ace",["Bat-Hound"],null],["Katherine Kane",["Batwoman"],null],["Richard Grayson",["Robin","Nightwing"],null],["Damian Wayne",["Robin","Redbird"],null],["Alfred Pennyworth",["Penny-one"],null],["Elizabeth Kane",["Batgirl"],null]];
 var sKClassReq = [[0,14,0],[0,12,0],[1,13,0],[1,11,0],[2,11,0],[2,14,0],[3,13,0],[3,10,0],[4,13,0],[4,12,0],[5,15,0],[5,11,0]];
 var classList = []; // which classes can we pick?
 var choices = []; // what are our scene choices?
@@ -20,19 +20,7 @@ var rollCount = 0; // which reroll are we on?
 var modalText = "Houston, we have a problem defining modalText";
 let classText = [];
 var classImage = ['Bale.jpeg','Pattinson.jpg','Keaton.jpg','Arnett.jpg','Affleck.jpg','Conroy.jpg'];
-var sKImage = [
-["Jason.jpg","Red Hood.jpg","Wingman.jpg"],
-["Batman Terry.jpg"],
-["Batgirl Barbara.png","Oracle.jpg"],
-["Spoiler.jpg","Robin Steph.jpg","Batgirl Steph.jpg"],
-["Robin Tim.jpg","Red Robin.jpg"],
-[],
-[],
-[],
-[],
-[],
-[],
-[],
+var sKImage = [['Jason.jpg','RedHood.jpg','Wingman.jpg'],['BatmanTerry.jpg'],['BatgirlBarbara.png','Oracle.jpg'],['Spoiler.jpg','RobinSteph.jpg','BatgirlSteph.jpg'],['RobinTim.jpg','RedRobin.jpg'],['BatgirlCassandra.jpg','BlackBat.jpg','Kasumi.jpg'],['Bat-Hound.jpg'],['Batwoman.jpg'],['RobinRichard.jpg','Nightwing.png'],['RobinDamian.jpg','Redbird.jpg'],['Alfred.jpg'],['BatgirlBetty.jpg'],
 ];
 //team array, 1: [batman,sidekick,sidekick] 2: [name,stats];
 var team = [["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]]];
@@ -234,7 +222,6 @@ function editTeam(answer){
   for (let i = 0; i < 6; i++){
     team[picking][1][i] = attributes[i][1];
   }
-  alert(team[picking].join(", "));
   if (picking < 1){
     picking++;
     classList = [];
@@ -268,6 +255,9 @@ function getSKData(array){
 
 function sKDescription(sKId){
   let classDesc = sKClasses[sKId][0]+"<br>";
-  classDesc += "Alias: "+sKClasses[sKId][1].join(" / ");
+  classDesc += "Alias: "+sKClasses[sKId][1].join(" / ")+"<br>";
+  for (let image = 0; image < sKImage[sKId].length; image++){
+    classDesc += "<img class='sKImage' src="+sKImage[sKId][image]+">";
+  }
   return classDesc;
 }
