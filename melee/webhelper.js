@@ -18,7 +18,6 @@ function startNoDB() {
   setupNoDB();
 }
 
-
 // Track in-game progress for saves.
 var gameProgress = {
   id: null,
@@ -27,16 +26,16 @@ var gameProgress = {
   gold: 25,
   hitPoints: 10,
   flags: [],
-  turnNumber: 0
+  turnNumber: 0,
 };
 
 var config = {
-  START_GAME: 'START_GAME',
-  SELECT_CHARACTER: 'SELECT_CHARACTER',
-  PLAY_GAME: 'PLAY_GAME',
-  GAME_OVER: 'GAME_OVER',
-  OPTION_NEW_GAME: 'OPTION_NEW_GAME',
-  OPTION_SAVE_GAME: 'OPTION_SAVE_GAME'
+  START_GAME: "START_GAME",
+  SELECT_CHARACTER: "SELECT_CHARACTER",
+  PLAY_GAME: "PLAY_GAME",
+  GAME_OVER: "GAME_OVER",
+  OPTION_NEW_GAME: "OPTION_NEW_GAME",
+  OPTION_SAVE_GAME: "OPTION_SAVE_GAME",
 };
 
 // Track game state and keep information pulled from Airtable that we don't
@@ -46,14 +45,14 @@ var gameData = {
   optionFlags: [],
   characters: [],
   savedGames: {},
-  touchedSinceSave: false
+  touchedSinceSave: false,
 };
 
 // This will return false if the character does not have the required flag
 // for a choice or if the character has the blocking flag for the choise.
 // Otherwise it will return true.
 function optionIsVisible(requiredFlags, blockingFlags) {
-  if (requiredFlags)  {
+  if (requiredFlags) {
     for (let idx = 0; idx < requiredFlags.length; idx++) {
       if (!gameProgress.flags.includes(requiredFlags[idx])) {
         return false;
@@ -117,10 +116,9 @@ function startNoDB() {
 
 function setup() {
   setOptions([{ choice: "", target: "" }]);
-  buttonElement.innerHTML = "Choose One."; 
-  buttonElement
-    .addEventListener("click", handleClick);
-    // .setAttribute("onclick", "getScene(dropdown.value)");
+  buttonElement.innerHTML = "Choose One.";
+  buttonElement.addEventListener("click", handleClick);
+  // .setAttribute("onclick", "getScene(dropdown.value)");
 }
 
 /* function setOptions(options) {
@@ -138,7 +136,7 @@ function setup() {
 function setOptions(options) {
   var dropdown = document.getElementById("choices");
   while (dropdown.options.length) {
-      dropdown.remove(0);
+    dropdown.remove(0);
   }
   if (options) {
     for (var i = 0; i < options.length; i++) {
@@ -151,14 +149,14 @@ function setOptions(options) {
     }
     appendGameOptions();
   } else {
-    buttonElement.innerHTML = 'The End';
-    buttonElement.setAttribute('disabled', 'true');
+    buttonElement.innerHTML = "The End";
+    buttonElement.setAttribute("disabled", "true");
   }
 }
 function appendGameOptions() {
   let option;
   if (playingGame() && gameData.touchedSinceSave) {
-    option = new Option('* Save Game', 'OPTION_SAVE_GAME');
+    option = new Option("* Save Game", "OPTION_SAVE_GAME");
     dropdown.options.add(option);
   }
 }
@@ -168,49 +166,44 @@ function playingGame() {
 }
 
 function getCharacterName(character) {
-  return character.split(' ')[0];
+  return character.split(" ")[0];
 }
-
 
 /* NEW Display Story */
 //function displayStory(text) {
-  //currentStoryElement.innerHTML = text;
+//currentStoryElement.innerHTML = text;
 //}
 
 function displayStory(text, delay = false, append = false) {
-    let currentStoryElement = document.getElementById("currentStory");
-    if (typeof(text) === 'string') {
-        currentStoryElement.innerHTML = text;
-    } 
-	// the following makes text reveal slowly if a delay is indicated in the database
-	else if (delay) {
-        // Disable the button to prevent making a selection before
-        // full message is delivered.
-        buttonElement.disabled = true;
-        // Keep shifting strings from the array until it is empty.
-        if (append) {
-            currentStoryElement.innerHTML += `<br /><br />${text.shift()}`;
-        } 
-		else {
-            currentStoryElement.innerHTML = text.shift();
-        }
-        if (text.length) {
-            setTimeout(function () {
-                displayStory(text, delay, true);
-            }, delay);
-        } 
-		else {
-            // Done. Re-enable button.
-            buttonElement.disabled = false;
-        }
-    } 
-	else {
-        currentStoryElement.innerHTML = text.join('<br /><br />');
+  let currentStoryElement = document.getElementById("currentStory");
+  if (typeof text === "string") {
+    currentStoryElement.innerHTML = text;
+  }
+  // the following makes text reveal slowly if a delay is indicated in the database
+  else if (delay) {
+    // Disable the button to prevent making a selection before
+    // full message is delivered.
+    buttonElement.disabled = true;
+    // Keep shifting strings from the array until it is empty.
+    if (append) {
+      currentStoryElement.innerHTML += `<br /><br />${text.shift()}`;
+    } else {
+      currentStoryElement.innerHTML = text.shift();
     }
+    if (text.length) {
+      setTimeout(function () {
+        displayStory(text, delay, true);
+      }, delay);
+    } else {
+      // Done. Re-enable button.
+      buttonElement.disabled = false;
+    }
+  } else {
+    currentStoryElement.innerHTML = text.join("<br /><br />");
+  }
 }
 
-
-function showModal(htmlData){
+function showModal(htmlData) {
   let statsBox = document.getElementById("modalBox");
   let statsText = document.getElementById("modal-content");
   statsText.innerHTML = htmlData;
@@ -222,13 +215,13 @@ function hideModal() {
   statsBox.style.display = "none";
 }
 
-function addImage(imageURL){
+function addImage(imageURL) {
   let image = document.createElement("img");
   image.src = imageURL;
   image.setAttribute("width", "400px");
   let storyBox = document.getElementById("storybox");
   if (hasImage == true) {
-      storyBox.innerHTML="";
+    storyBox.innerHTML = "";
   }
   storyBox.style.textAlign = "center";
   storyBox.appendChild(image);
@@ -237,7 +230,7 @@ function addImage(imageURL){
 
 function setupNoDB() {
   story("Game Loading");
-  options=["testing 1", "test 2", "test3"];
+  options = ["testing 1", "test 2", "test3"];
   setOptionsNoDB(options);
   buttonElement.innerHTML = "Pick One!";
   buttonElement.setAttribute("onclick", "checkAnswersNoDB(dropdown.value)");
@@ -263,12 +256,12 @@ function delayText(text, delay) {
   let index = 0;
   story("");
   let callback = function (text) {
-    story(currentStoryElement.innerHTML  + text[index]+ "<br />"+ "<br />");
+    story(currentStoryElement.innerHTML + text[index] + "<br />" + "<br />");
     index += 1;
-    if (index >text.length-1){
+    if (index > text.length - 1) {
       clearInterval(timer);
     }
-  }
+  };
   let timer = setInterval(function () {
     callback(text);
   }, delay);
