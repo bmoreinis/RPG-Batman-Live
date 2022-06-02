@@ -37,7 +37,6 @@ function start() {
       resultTargets.defeated = data[1].fields.defeated;
       resultTargets.flee = data[1].fields.flee;
       resultTargets.enemyFlee = data[1].fields.enemyFlee;
-      console.log("resultTargets", resultTargets);
       setup(data[1].fields.story);
     })
     .catch(function (err) {
@@ -71,10 +70,8 @@ function addImage(imageURL) {
   hasImage = true;
 }
 
-function setup() {
-  story(
-    "You are on the top of Gotham Funland and you see the Joker planning something."
-  );
+function setup(storyText) {
+  story(storyText);
   options = ["Confront Him", "~Wait and then Attack", "~Ask Robin"];
   setOptions(options);
   buttonElement.innerHTML = "What will you do?";
