@@ -11,6 +11,8 @@ var attributes = [["Strength",0],["Intelligence",0],["Wisdom",0],["Constitution"
 // classReq = attributes[index], minimum value to qualify, classes[index]
 var classReq = [[0,13,0],[1,14,1],[2,9,2],[3,11,3],[4,10,4],[5,12,5]];
 var classes = [["Christian Bale",["Batman Begins", "The Dark Night"],"One Punch Knockout"],["Robert Pattinson",["The Batman 2020"],"Knows All The Answers"],["Michael Keaton",["Batman 1989"],"Predicts Villain Behaviors"],["Will Arnett",["Lego Batman: The Movie"],"No Fall Damage"],["Ben Affleck",["Batman vs. Superman"],"Can Escape Any Room"],["Kevin Conroy",["Batman: The Killing Joke"],"Soul Catching Voice"]];
+var sKClasses = [["Jason Todd",["Robin","Red Hood","Wingman"],"undefined"],["Terry McGinnis",["Batman Beyond"],"undefined"],["Barbara Gordon",["Batgirl","Oracle"],"undefined"],["Stephanie Brown",["Spoiler","Robin","Batgirl"],"undefined"],["Tim Drake",["Robin","Red Robin"],"undefined"],["Cassandra Cain",["Batgirl","Black Bat"],null],["Ace",["Bat-Hound"],null],["Katherine Kane",["Batwoman"],null],["Richard Grayson",["Robin","Nightwing"],null],["Damian Wayne",["Robin","Redbird"],null],["Alfred Pennyworth",["Penny-one"],null],["Elizabeth Kane",["Batgirl"],null]];
+var sKClassReq = [[0,14,0],[0,12,0],[1,13,0],[1,11,0],[2,11,0],[2,14,0],[3,13,0],[3,10,0],[4,13,0],[4,12,0],[5,15,0],[5,11,0]];
 var classList = []; // which classes can we pick?
 var choices = []; // what are our scene choices?
 var maxRolls = 3; // how many rerolls? Default = 3
@@ -160,6 +162,7 @@ function classOptions(){
 }
 
 function picker(){
+  classText = [];
   if (picking == 0){
     classList = classOptions();
     let classData = getClassData(classList);
@@ -172,6 +175,23 @@ function picker(){
     addStory+="</ul>";
     story(addStory);
     choices = getClassData(classList,0);
+    answer = setOptionsNoDB(choices);
+  }
+  else{
+    classList = sKClassOptions();
+    let classData = getSKData(classList);
+    let addStory="Who will be your sidekick?  Here are your options based on your rolls:<br><ul style=\"text-align:left;\">";
+    alert(classList);
+    alert(classData);
+    for (let choice=0; choice < classData.length; choice++){
+      alert("Loop "+choice);
+      classText.push(sKDescription(classList[choice]));
+      alert(classText[choice]);
+      addStory+="<li> "+sKClasses[classList[choice]][0]+ ": <button onclick=\"showModal(classText["+choice+"]);\">About</button>";
+    }
+    addStory+="</ul>";
+    story(addStory);
+    choices = getSKData(classList,0);
     answer = setOptionsNoDB(choices);
   }
 }
@@ -211,4 +231,33 @@ function editTeam(answer){
     whichAttribute = 0;
     roller();
   }
+}
+
+function sKClassOptions(){
+  classList = []; 
+  for (let att6 = 0; att6 < attributes.length; att6++ ){
+    if (attributes[att6][1] >= sKClassReq[att6*2][1]){
+      /* classList.push(classes[classReq[att6][2]][0]); */
+      classList.push(att6*2);
+    }
+    if (attributes[att6][1] >= sKClassReq[att6*2+1][1]){
+      /* classList.push(classes[classReq[att6][2]][0]); */
+      classList.push(att6*2+1);
+    }
+  }
+  return classList;
+}
+
+function getSKData(array){
+  let classData = [];
+  for (let option = 0; option < array.length; option++){
+    classData.push(sKClasses[array[option]][0]);
+  }
+  return classData;
+}
+
+function sKDescription(sKId){
+  let classDesc = sKClasses[sKId][0]+"<br>";
+  classDesc += "<button onclick = 'hideModal()'>close</button>";
+  return classDesc;
 }
