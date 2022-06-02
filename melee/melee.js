@@ -212,12 +212,14 @@ function turnChange() {
 }
 
 function victory() {
+  localStorage.setItem("meleeTarget", resultTargets.victorious);
   story("The Joker has been defeated. Justice is served.");
   choices = ["Done"];
   answer = setOptions(choices);
 }
 
 function defeat() {
+  localStorage.setItem("meleeTarget", resultTargets.defeated);
   story("Batman fainted. The Joker is free to continue his plan.");
   choices = ["Done"];
   answer = setOptions(choices);
@@ -228,17 +230,19 @@ function endMeleeAndSave() {
   const game_id = localStorage.getItem("game_id");
   const url = `${base_url}/gameProgress/${game_id}?api_key=${key}`;
   const type = "PATCH";
-  // Provide other fields that would need to be updated in Airtable at this point.
-  console.log("endMeleeAndSave():", hp[0]);
   const progressData = {
     fields: {
-      HP: 11,
+      HP: meleeGameProgress.HP,
+      AC: meleeGameProgress.AC,
+      Au: meleeGameProgress.Au,
     },
   };
+  console.log("endMeleeAndSave:", progressData);
 
   buttonElement.innerHTML = "Saving game...";
   $.ajax({ url, type, data: progressData })
     .done(function (data) {
+      localStorage.removeItem("inMelee");
       window.close();
     })
     .fail(function (err) {
