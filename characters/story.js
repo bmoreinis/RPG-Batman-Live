@@ -20,6 +20,20 @@ var rollCount = 0; // which reroll are we on?
 var modalText = "Houston, we have a problem defining modalText";
 let classText = [];
 var classImage = ['Bale.jpeg','Pattinson.jpg','Keaton.jpg','Arnett.jpg','Affleck.jpg','Conroy.jpg'];
+var sKImage = [
+["Jason.jpg","Red Hood.jpg","Wingman.jpg"],
+["Batman Terry.jpg"],
+["Batgirl Barbara.png","Oracle.jpg"],
+["Spoiler.jpg","Robin Steph.jpg","Batgirl Steph.jpg"],
+["Robin Tim.jpg","Red Robin.jpg"],
+[],
+[],
+[],
+[],
+[],
+[],
+[],
+];
 //team array, 1: [batman,sidekick,sidekick] 2: [name,stats];
 var team = [["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]]];
 var picking = 0;
@@ -181,12 +195,8 @@ function picker(){
     classList = sKClassOptions();
     let classData = getSKData(classList);
     let addStory="Who will be your sidekick?  Here are your options based on your rolls:<br><ul style=\"text-align:left;\">";
-    alert(classList);
-    alert(classData);
     for (let choice=0; choice < classData.length; choice++){
-      alert("Loop "+choice);
       classText.push(sKDescription(classList[choice]));
-      alert(classText[choice]);
       addStory+="<li> "+sKClasses[classList[choice]][0]+ ": <button onclick=\"showModal(classText["+choice+"]);\">About</button>";
     }
     addStory+="</ul>";
@@ -224,7 +234,7 @@ function editTeam(answer){
   for (let i = 0; i < 6; i++){
     team[picking][1][i] = attributes[i][1];
   }
-  alert(team[0].join(", "));
+  alert(team[picking].join(", "));
   if (picking < 1){
     picking++;
     classList = [];
@@ -258,6 +268,6 @@ function getSKData(array){
 
 function sKDescription(sKId){
   let classDesc = sKClasses[sKId][0]+"<br>";
-  classDesc += "<button onclick = 'hideModal()'>close</button>";
+  classDesc += "Alias: "+sKClasses[sKId][1].join(" / ");
   return classDesc;
 }
