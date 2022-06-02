@@ -1,6 +1,9 @@
 body {
   background: black url("https://i.ytimg.com/vi/TUYx0wf8-h0/maxresdefault.jpg") center 25px no-repeat;
 }
+audio::-webkit-media-controls-panel {
+  background-color: gray;
+}
 
 p, #choices, #button1 {
   font-family: Garamond;

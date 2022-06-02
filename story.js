@@ -16,6 +16,7 @@ const STORY_INTRO_ID = "recj6DMombutWdiAq";
 const CHARACTER_SELECT_ID = "recclANwLP6dJZ0zV";
 const OPENING_SCENE_ID = "recnU9pSm7CZdfQ1L";
 const FINISH_CHAR_CREATION_ID = "recniwZTG3UnV97Hr";
+const FINISH_COMBAT_ID = "recN05d6oBJHcbSmy";
 const OPENING_BATMAN_SCENE = "recIjdKteWhFUXz96";
 
 // Start story and make initial DB requests for opening scene, saved games,
@@ -117,7 +118,7 @@ function getScene(record_id, resume = false) {
     gameProgress.flags.push(optionFlags[record_id]);
   }
   clearOptionFlags();
-
+  console.log("getScene() record_id:", record_id);
   $.ajax({
     url: `${base_url}/scenes/${record_id}?api_key=${key}`,
     type: "GET",
@@ -126,7 +127,7 @@ function getScene(record_id, resume = false) {
       // Once AJAX request returns data, we destructure
       // it and store it in variables.
       let choices = [];
-      let { title, story, special } = data.fields;
+      let { story, special } = data.fields;
       console.log("getScene():", data.fields);
       if (data.fields.special) {
         switch (special) {
@@ -142,6 +143,9 @@ function getScene(record_id, resume = false) {
             window.open("./characters/index.html", "_blank");
             break;
           case "Melee1":
+            localStorage.setItem("inMelee", record_id);
+            localStorage.setItem("melee_id", data.fields.melee_id);
+            getInterstitialScene(special);
             window.open("./melee/index.html", "_blank");
             break;
           default:
@@ -198,14 +202,18 @@ function getScene(record_id, resume = false) {
 // Get pause scene for character creation and melee.
 function getInterstitialScene(special) {
   let scene = "";
+  let target = OPENING_BATMAN_SCENE;
 
   switch (special) {
     case "Roll":
       gameData.currentGameState = config.ROLLING_CHARACTER;
       scene = FINISH_CHAR_CREATION_ID;
       break;
-    // case "Melee1":
-    //   break;
+    case "Melee1":
+      gameData.currentGameState = config.IN_MELEE;
+      scene = FINISH_COMBAT_ID;
+      target = "MeleeTarget";
+      break;
     default:
       console.log("getInterstitialScene(): bad argument:", special);
   }
@@ -254,14 +262,14 @@ function getNewOrSavedStory(value) {
   }
 }
 
-function continueGame() {
+function continueGame(melee) {
   const game_id = localStorage.getItem("game_id");
   console.log("continueGame:", game_id);
   $.ajax({ url: `${base_url}/gameProgress/${game_id}?api_key=${key}` })
     .done(function (data) {
       console.log("continueGame", data);
       gameData.currentGameState = config.PLAY_GAME;
-      resumeGame(game_id, data.fields);
+      resumeGame(game_id, data.fields, melee);
     })
     .fail(function (err) {
       console.log("continueGame()", err);
@@ -269,7 +277,7 @@ function continueGame() {
 }
 
 // Build current game progress data from saved game data.
-function resumeGame(record_id, progressData) {
+function resumeGame(record_id, progressData, melee) {
   localStorage.setItem("game_id", record_id);
   gameProgress.id = record_id;
   gameProgress.character = progressData.character;
@@ -285,7 +293,16 @@ function resumeGame(record_id, progressData) {
   gameProgress.Constitution = progressData.Constitution;
   gameProgress.Dexterity = progressData.Dexterity;
   gameProgress.Charisma = progressData.Charisma;
-  getScene(progressData.currentScene, true);
+
+  let currentScene = melee ? getMeleeTargetScene() : progressData.currentScene;
+  console.log("resumeGame() currentScene:", currentScene);
+  getScene(currentScene, true);
+}
+
+function getMeleeTargetScene() {
+  let scene = localStorage.getItem("meleeTarget");
+  localStorage.removeItem("meleeTarget");
+  return scene;
 }
 
 // Update game progress with the selected character.
