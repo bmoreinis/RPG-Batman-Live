@@ -24,15 +24,13 @@ var classReq = [
   [4, 10, 4],
   [5, 12, 5],
 ];
-
-/* Class-related Melee Options */ 
-var classAttacks = [
-  ["Christian Bale", "One Punch Knockout"],
-  ["Robert Pattinson", "Knows All The Answers"],
-  ["Michael Keaton", "Predicts Villain Behaviors"],
-  ["Will Arnett", "No Fall Damage"],
-  ["Ben Affleck",  "Can Escape Any Room"],
-  ["Kevin Conroy", "Soul Catching Voice"]
+var classes = [
+  ["Christian Bale", ["Batman Begins", "The Dark Night"], "One Punch Knockout"],
+  ["Robert Pattinson", ["The Batman 2020"], "Knows All The Answers"],
+  ["Michael Keaton", ["Batman 1989"], "Predicts Villain Behaviors"],
+  ["Will Arnett", ["Lego Batman: The Movie"], "No Fall Damage"],
+  ["Ben Affleck", ["Batman vs. Superman"], "Can Escape Any Room"],
+  ["Kevin Conroy", ["Batman: The Killing Joke"], "Soul Catching Voice"],
 ];
 
 /* Bonus only applies on move or attack, not move+attack */
@@ -248,9 +246,16 @@ function endMeleeAndSave() {
     });
 }
 
+/* Not Implemented */
+function nim() {
+  story("You won Nim");
+  choices = ["Great"];
+  answer = setOptions(choices);
+}
+
 function setup() {
   story(
-    "<i>For best results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something."
+    "You are on the top of Gotham Funland and you see the Joker planning something."
   );
   options = ["Confront Him", "~Wait and then Attack", "~Ask Robin"];
   setOptions(options);

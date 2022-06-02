@@ -33,7 +33,6 @@ var config = {
   START_GAME: "START_GAME",
   SELECT_CHARACTER: "SELECT_CHARACTER",
   ROLLING_CHARACTER: "ROLLING_CHARACTER",
-  IN_MELEE: "IN_MELEE",
   PLAY_GAME: "PLAY_GAME",
   GAME_OVER: "GAME_OVER",
   OPTION_NEW_GAME: "OPTION_NEW_GAME",
@@ -91,13 +90,6 @@ function handleClick() {
         // getScene(FINISH_CHAR_CREATION_ID);
       }
       break;
-    case config.IN_MELEE:
-      if (localStorage.getItem("InMelee")) {
-        doNothing();
-      } else {
-        console.log("Continuing game after melee...");
-        continueGame(true);
-      }
     default:
       if (dropdown.value === config.OPTION_SAVE_GAME) {
         saveGame();
