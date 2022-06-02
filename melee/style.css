@@ -122,3 +122,21 @@ td {
   text-decoration: none;
   cursor: pointer;
 }
+
+#actionModal{
+  width: 400px;
+  height: 300px;
+  position: fixed;
+  background-color: white;
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto;
+  display: none;
+}
+
+#word{
+  width: 400px;
+  height: 300px;
+  object-fit: contain;
+}

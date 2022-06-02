@@ -269,23 +269,32 @@ function pcAttack(att) {
       inventory[0][att][2] = inventory[0][att][2] - 1;
     }
     let damage = 0;
-    let storyText = inventory[0][att][3] + "Joker";
-    let attRoll = customRoll(20, 1);
-    if (attRoll > 16) {
-      damage = customRoll(4, 1) + customRoll(4, 1) + inventory[0][att][1];
-      storyText += ". Critical hit! You deal " + damage + " damage.";
-    } else if (attRoll < 5) {
-      storyText += ". You slip up and miss.";
-    } else if (attRoll + stats[0][0] >= stats[1][1]) {
-      damage = customRoll(4, 1) + inventory[0][att][1];
-      storyText += ", dealing " + damage + " damage.";
-    } else {
-      storyText += ". Joker seems unphased.";
+    let storyText = inventory[0][att][3]+"Joker";
+    let attRoll = customRoll(20,1);
+    if (attRoll > 17){
+      if (att == 0 || att == 1){
+        actionWord();
+      }
+      damage = customRoll(4,1)+customRoll(4,1)+inventory[0][att][1];
+      storyText+= ". Critical hit! You deal "+damage+" damage.";
     }
-    if (att == 1) {
-      storyText += " You then move out of the way.";
+    else if (attRoll < 3){
+      storyText+=". You slip up and miss.";
     }
-    hp[1] = hp[1] - damage;
+    else if (attRoll + stats[0][0] >= stats[1][1]){
+      if (att == 0 || att == 1){
+        actionWord();
+      }
+      damage = customRoll(4,1)+inventory[0][att][1];
+      storyText+=", dealing "+damage+" damage.";
+    }
+    else{
+      storyText+= ". Joker seems unphased.";
+    }
+    if (att == 1){
+      storyText+=" You then move out of the way.";
+    } 
+    hp[1] = hp[1]-damage;
     story(storyText);
     choices = ["Ok"];
     setOptions(choices);
@@ -305,28 +314,37 @@ function attackId(answer) {
   }
 }
 
-function enemyAttack(att) {
-  if (jokerInv[att][2] != null) {
-    jokerInv[att][2] = jokerInv[att][2] - 1;
-  }
-  let damage = 0;
-  let storyText = jokerInv[att][3];
-  let attRoll = customRoll(20, 1);
-  if (attRoll > 18) {
-    damage = customRoll(4, 1) + customRoll(4, 1) + jokerInv[att][1];
-    storyText += ". Critical hit! You take " + damage + " damage.";
-  } else if (attRoll < 5) {
-    storyText += ". He misses, destracted from laughing about something.";
-  } else if (attRoll + stats[1][0] >= stats[0][1]) {
-    damage = customRoll(4, 1) + jokerInv[att][1];
-    storyText += ", dealing " + damage + " damage.";
-  } else {
-    storyText += jokerInv[att][4];
-  }
-  hp[0] = hp[0] - damage;
-  story(storyText);
-  choices = ["Ok"];
-  setOptions(choices);
+function enemyAttack(att){
+  if (jokerInv[att][2] != null){
+      jokerInv[att][2] = jokerInv[att][2] - 1;
+    }
+    let damage = 0;
+    let storyText = jokerInv[att][3];
+    let attRoll = customRoll(20,1);
+    if (attRoll > 18){
+      if (att == 0){
+        actionWord();
+      }
+      damage = customRoll(4,1)+customRoll(4,1)+jokerInv[att][1];
+      storyText+= ". Critical hit! You take "+damage+" damage.";
+    }
+    else if (attRoll < 3){
+      storyText+=". He misses, destracted from laughing about something.";
+    }
+    else if (attRoll + stats[1][0] >= stats[0][1]){
+      if (att == 0){
+        actionWord();
+      }
+      damage = customRoll(4,1)+jokerInv[att][1];
+      storyText+=", dealing "+damage+" damage.";
+    }
+    else{
+      storyText+= jokerInv[att][4];
+    }
+    hp[0] = hp[0]-damage;
+    story(storyText);
+    choices = ["Ok"];
+    setOptions(choices);
 }
 
 function pcHeal() {
@@ -337,4 +355,15 @@ function pcHeal() {
   if (hp[0] > 30) hp[0] = 30;
   choices = ["Ok"];
   setOptions(choices);
+}
+
+function actionWord(){
+  let imageId = customRoll(7,0);
+  actionModal.innerHTML = "<img id='word' src="+actionImages[imageId]+">";
+  actionModal.style.display = "block";
+  let hide = setTimeout(hideWord,600);
+}
+
+function hideWord(){
+  actionModal.style.display = "none";
 }

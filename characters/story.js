@@ -38,12 +38,14 @@ var classes = [
   ["Ben Affleck", ["Batman vs. Superman"], "Can Escape Any Room"],
   ["Kevin Conroy", ["Batman: The Killing Joke"], "Soul Catching Voice"],
 ];
+
 var classList = []; // which classes can we pick?
 var choices = []; // what are our scene choices?
 var maxRolls = 3; // how many rerolls? Default = 3
 var rollCount = 0; // which reroll are we on?
 var modalText = "Houston, we have a problem defining modalText";
 let classText = [];
+
 var classImage = [
   "Bale.jpeg",
   "Pattinson.jpg",
@@ -52,6 +54,8 @@ var classImage = [
   "Affleck.jpg",
   "Conroy.jpg",
 ];
+var team = [["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]],["",[0,0,0,0,0,0]]];
+var picking = 0;
 
 function checkAnswersNoDB(answer, classSelection) {
   console.log("checkAnswersNoDB, classSelection =", classSelection);
