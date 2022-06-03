@@ -47,17 +47,18 @@ var classBonus = [
 ];
 // Non Player Characters: Name, HP, Attack, Armor Class, Hit Dice (2 = max 8 points)
 var npcs = [["Joker", 20, "punch", 6, 2],["Riddler",]];
-
+// Not implemented
 var initiative = ["player", "opponent", "critical"];
+// This variable determines who attacks
 var turn = 0;
-/* stats[0] = attack bonus; stats[1] = armour class */
+/* stats[char][0] = attack bonus; stats[char][1] = armour class */
 var stats = [
   [4, 15],
   [3, 13],
 ];
 /* hp[0] is batman; hp[1] = joker */
 var hp = [30, 25];
-
+// roll (dice) sided dice (numDice) times
 function roller(dice, numDice) {
   let sum = 0;
   for (let roll = 1; roll <= numDice; roll++) {
@@ -66,7 +67,7 @@ function roller(dice, numDice) {
   }
   return sum;
 }
-
+// Story starts here
 function setup() {
   story("<i>For best Story results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
   options=["Confront Him!", "~Wait and then Attack", "~Ask Robin"];
@@ -95,6 +96,7 @@ function determineInitiative() {
       //playerTurn();
       break;
     default:
+      // Not implemented
       turn = 2;
       modalText += "Whoa! Critical incident.";
       critical();
@@ -110,6 +112,7 @@ function determineInitiative() {
 @params none
 @return damage
 This function takes stats into consideration and calculates damage and applies it to the NPC opponent*/
+// This function is not called or implemented
 function userCalculation() {
   if (strength >= 14) {
     fistDamage = fistDamage + 2;
@@ -122,21 +125,21 @@ function userCalculation() {
     punches = punches + 4;
   }
 }
-
+// Player choses action
 function pcTurn() {
   console.log("pcTurn() called");
   story("It is your turn, what would you like to do?");
   choices = moves;
   answer = setOptions(choices);
 }
-
+// Working, but no effect implemented
 function move() {
   // find in 5/24[1]
   story("You moved to a new spot");
   choices = ["Ok"];
   answer = setOptions(choices);
 }
-
+// This function is not called
 function moveAttack() {
   //Find in 5/24[2]
   let damage = roller(npcs[0][3], 1);
@@ -151,21 +154,21 @@ function moveAttack() {
   choices = ["Ok"];
   answer = setOptions(choices);
 }
-
+// Displays batman's attack options
 function attack() {
   //Find in 5/24[3]
   story("What would you like to attack with?");
   choices = [
     "Punch",
     "Batarang: (" + inventory[2][2] + " Remaining)",
-    "Smoke Pellets: (" + inventory[4][2] + " Remaining)",
-    "Impact Mines: (" + inventory[5][2] + " Remaining)",
-    "Sticky Glue Balls: (" + inventory[6][2] + " Remaining)",
+    "~Smoke Pellets: (" + inventory[4][2] + " Remaining)",
+    "~Impact Mines: (" + inventory[5][2] + " Remaining)",
+    "~Sticky Glue Balls: (" + inventory[6][2] + " Remaining)",
     "First-Aid Kit: (" + inventory[3][2] + " Remaining)",
   ];
   answer = setOptions(choices);
 }
-
+// Not implemented
 function special() {
   //Find in 5/24[4]
   story(
@@ -176,7 +179,7 @@ function special() {
   choices = ["Ok"];
   answer = setOptions(choices);
 }
-
+// Not called
 function runAway() {
   story(
     "You decided that it you weren't ready to fight " +
@@ -186,7 +189,7 @@ function runAway() {
   choices = ["Done"];
   answer = setOptions(choices);
 }
-
+// Not called
 function heal() {
   story(
     "You used a First-Aid Kit and healed " +
@@ -196,7 +199,7 @@ function heal() {
   choices = ["Ok"];
   answer = setOptions(choices);
 }
-
+// Picks random enemy attack
 function enemyTurn() {
   if (turn < 1) {
     turn = 1;
@@ -209,7 +212,7 @@ function enemyTurn() {
     else enemyTurn();
   } else enemyAttack(2);
 }
-
+// Turn change, combat ends if eiither hp is below 0.
 function turnChange() {
   turn++;
   if (hp[1] < 1) {
@@ -224,14 +227,14 @@ function turnChange() {
     }
   }
 }
-
+// Not working, localStorage breaks the code
 function victory() {
   localStorage.setItem("meleeTarget", resultTargets.victorious);
   story("The Joker has been defeated. Justice is served.");
   choices = ["Done"];
   answer = setOptions(choices);
 }
-
+// Not working, localStorage breaks the code
 function defeat() {
   localStorage.setItem("meleeTarget", resultTargets.defeated);
   story("Batman fainted. The Joker is free to continue his plan.");
@@ -263,7 +266,7 @@ function endMeleeAndSave() {
     });
 }
 
-
+// Function not called
 function random() {
   let sum = 0;
   for (let roll = 1; roll <= 3; roll++) {
@@ -272,7 +275,7 @@ function random() {
   }
   return sum;
 }
-
+// (att) is what attack was picked, landing a punch displays an action word
 function pcAttack(att) {
   if (inventory[att][2] > 0 || inventory[att][2] == null) {
     if (inventory[att][2] != null) {
@@ -281,6 +284,7 @@ function pcAttack(att) {
     let damage = 0;
     let storyText = inventory[att][3]+"Joker";
     let attRoll = customRoll(20,1);
+// Critical if true
     if (attRoll > 17){
       if (att == 0 || att == 1){
         actionWord();
@@ -288,9 +292,11 @@ function pcAttack(att) {
       damage = customRoll(4,1)+customRoll(4,1)+inventory[att][1];
       storyText+= ". Critical hit! You deal "+damage+" damage.";
     }
+// Miss if true
     else if (attRoll < 3){
       storyText+=". You slip up and miss.";
     }
+// Hit if true
     else if (attRoll + stats[0][0] >= stats[1][1]){
       if (att == 0 || att == 1){
         actionWord();
@@ -298,6 +304,7 @@ function pcAttack(att) {
       damage = customRoll(4,1)+inventory[att][1];
       storyText+=", dealing "+damage+" damage.";
     }
+// else means target is safe
     else{
       storyText+= ". Joker seems unphased.";
     }
@@ -310,7 +317,7 @@ function pcAttack(att) {
     setOptions(choices);
   }
 }
-
+// Not called or implemented
 function critical() {
   story(
     "You and " +
@@ -320,11 +327,11 @@ function critical() {
   choices = ["Lets Settle This"];
   answer = setOptions(choices);
 }
-
+// Testing function for unique dice
 function customRoll(range, min) {
   return Math.floor(Math.random() * range + min);
 }
-
+// Identifies chosen attack
 function attackId(answer) {
   if (answer.includes("Batarang") && inventory[2][2] > 0) {
     pcAttack(2);
@@ -333,7 +340,7 @@ function attackId(answer) {
     pcHeal();
   }
 }
-
+// same as pcAttack but for joker
 function enemyAttack(att){
   if (jokerInv[att][2] != null){
       jokerInv[att][2] = jokerInv[att][2] - 1;
@@ -366,7 +373,7 @@ function enemyAttack(att){
     choices = ["Ok"];
     setOptions(choices);
 }
-
+// Recover health if First-Aid kit is chosen
 function pcHeal() {
   inventory[3][2] = inventory[3][2] - 1;
   let heal = customRoll(3, 0) + inventory[3][1];
@@ -376,7 +383,7 @@ function pcHeal() {
   choices = ["Ok"];
   setOptions(choices);
 }
-
+// Not called
 function wait() {
   story(
     "You sat on the rafters with Robin undetected and listened to the Joker's plan."
@@ -384,13 +391,13 @@ function wait() {
   choices = ["Chase Him", "Leave him", "Ask Robin"];
   answer = setOptions(choices);
 }
-
+// Not called
 function robinJoker() {
   alert(
     "Robin: Hey Batman, I would wait and see what the Joker is up to, then we can fight him."
   );
 }
-
+// Shows action word
 function actionWord(){
   let imageId = customRoll(7,0);
   //let batmanAudio = document.getElementById("batAudio");
@@ -400,7 +407,7 @@ function actionWord(){
   actionMod.style.display = "block";
   let hide = setTimeout(hideWord,600);
 }
-
+// Removes action word after 0.6 seconds
 function hideWord(){
   actionMod.style.display = "none";
 }
