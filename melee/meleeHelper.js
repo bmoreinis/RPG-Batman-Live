@@ -1,5 +1,4 @@
 window.onload = start;
-//This right now is a copy of webhelper.js, nothing has changed yet. Will update Notes.txt when updated. 
 var options=[];
 var buttonElement = document.getElementById("button1");
 var currentStoryElement = document.getElementById("currentStory");
@@ -70,6 +69,14 @@ function showModal(htmlData){
   statsText.innerHTML = htmlData;
   statsBox.style.display = "block";
 }
+
+function actionModal(htmlData) {
+  let statsBox = document.getElementById("modalBox");
+  let statsText = document.getElementById("modal-content");
+  statsText.innerHTML = htmlData;
+  statsBox.style.display = "block";
+}
+
 
 function hideModal() {
   let statsBox = document.getElementById("modalBox");
