@@ -1,9 +1,13 @@
 /* Global Variables */
 var choices = [];
 var modalText = "Houston, we have a problem defining modalText";
-var inventory = [["Punch", 5, null, "You punch "],["Punch", 5, null, "You punch "],["Batarang", 7, 3, "You throw a batarang at "],["First-Aid Kit", 4, 5],["Smoke Pellets", null, 2],["Impact Mines", 7, 3],["Sticky Glue Balls", null, 2]];
+// user attack, damage done, amount you can use, description
+// second punch is for move & attack - so lower damage
+var inventory = [["Punch", 5, null, "You punch "],["Punch", 3, null, "You punch "],["Batarang", 7, 3, "You throw a batarang at "],["First-Aid Kit", 4, 5],["Smoke Pellets", null, 2],["Impact Mines", 7, 3],["Sticky Glue Balls", null, 2]];
 var gold =  ["Gold", null, 50];
-var jokerInv = [["Punch", 1, null, "Joker throws a punch", ". You see it coming and dodge."],["Gun",3,6,"Joker fires his gun",". You block the bullet with your wrist."],["Tazer",4,null,"Joker uses his tazer",". You duck under your insulated cape."]];
+// attack type, bonus damage, times used (null = infinite), story text, miss response (hit responses are standard). 
+var jokerInv = [["Punch", 1, null, "Joker throws a punch", ". You see it coming and dodge."],["Gun",3,6,"Joker fires his gun",". You block the bullet with your wrist."],["Taser",4,null,"Joker uses his taser",". You duck under your insulated cape."]];
+// displayed during punches or kicks (kicks not implemented)
 var actionImages=["crack.jpg","kapow.jpg","oof.jpg","pow.jpg","smash.jpg","wham.jpg","zwap.jpg"];
 // Airtable
 const pw = localStorage.getItem("pw");
@@ -11,7 +15,8 @@ const key = "keyJLBdH3kt" + pw;
 const app_id = "appUOVbjlWQtGuhQ2";
 const base_url = `https://api.airtable.com/v0/${app_id}`;
 
-//Attributes
+// TO DO: Attributes -- need populated from Airtable for this character
+// Need a way of getting bonuses for attacks, defense, etc.
 var attributes = [
   ["Strength", 0],
   ["Intelligence", 0],
@@ -20,14 +25,9 @@ var attributes = [
   ["Dexterity", 0],
   ["Charisma", 0]
 ];
-var classReq = [
-  [0, 13, 0],
-  [1, 14, 1],
-  [2, 9, 2],
-  [3, 11, 3],
-  [4, 10, 4],
-  [5, 12, 5]
-];
+
+// TO DO: Look up which class is active, pull a custom attack or defense from the array below
+// and push that to the attack or defense array used.  Integrate that in melee messaging.
 var classAttacks= [
   ["Christian Bale","The Dark Night", "One Punch Knockout"],
   ["Robert Pattinson","Knows All The Answers"],
@@ -40,12 +40,14 @@ var classAttacks= [
 /* Bonus only applies on move or attack, not move+attack */
 var moves = ["Move", "Move + Attack", "Attack", "Special"];
 
-/* Attribute, Threshold, Bonus, Move Applied */
+/* TO DO: Attribute, Threshold, Bonus, Move Applied */
 var classBonus = [
   [0, 14, +2, 2],
   [4, 12, +2, 0]
 ];
-var npcs = [["Joker", 20, "punch", 6, 2]];
+// Non Player Characters: Name, HP, Attack, Armor Class, Hit Dice (2 = max 8 points)
+var npcs = [["Joker", 20, "punch", 6, 2],["Riddler",]];
+
 var initiative = ["player", "opponent", "critical"];
 var turn = 0;
 /* stats[0] = attack bonus; stats[1] = armour class */
