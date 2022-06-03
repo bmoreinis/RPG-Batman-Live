@@ -1,5 +1,9 @@
 /* Global Variables */
+var choices = [];
 var modalText = "Houston, we have a problem defining modalText";
+var inventory = [["Punch", 5, null, "You punch "],["Punch", 5, null, "You punch "],["Batarang", 7, 3, "You throw a batarang at "],["First-Aid Kit", 4, 5],["Smoke Pellets", null, 2],["Impact Mines", 7, 3],["Sticky Glue Balls", null, 2]];
+var gold =  ["Gold", null, 50];
+var jokerInv = [["Punch", 1, null, "Joker throws a punch", ". You see it coming and dodge."],["Gun",3,6,"Joker fires his gun",". You block the bullet with your wrist."],["Tazer",4,null,"Joker uses his tazer",". You duck under your insulated cape."]];
 
 // Airtable
 const pw = localStorage.getItem("pw");
@@ -14,7 +18,7 @@ var attributes = [
   ["Wisdom", 0],
   ["Constitution", 0],
   ["Dexterity", 0],
-  ["Charisma", 0],
+  ["Charisma", 0]
 ];
 var classReq = [
   [0, 13, 0],
@@ -22,15 +26,15 @@ var classReq = [
   [2, 9, 2],
   [3, 11, 3],
   [4, 10, 4],
-  [5, 12, 5],
+  [5, 12, 5]
 ];
-var classes = [
-  ["Christian Bale", ["Batman Begins", "The Dark Night"], "One Punch Knockout"],
-  ["Robert Pattinson", ["The Batman 2020"], "Knows All The Answers"],
-  ["Michael Keaton", ["Batman 1989"], "Predicts Villain Behaviors"],
-  ["Will Arnett", ["Lego Batman: The Movie"], "No Fall Damage"],
-  ["Ben Affleck", ["Batman vs. Superman"], "Can Escape Any Room"],
-  ["Kevin Conroy", ["Batman: The Killing Joke"], "Soul Catching Voice"],
+var classAttacks= [
+  ["Christian Bale","The Dark Night", "One Punch Knockout"],
+  ["Robert Pattinson","Knows All The Answers"],
+  ["Michael Keaton","Predicts Villain Behaviors"],
+  ["Will Arnett", "No Fall Damage"],
+  ["Ben Affleck", "Can Escape Any Room"],
+  ["Kevin Conroy", "Soul Catching Voice"]
 ];
 
 /* Bonus only applies on move or attack, not move+attack */
@@ -39,7 +43,7 @@ var moves = ["Move", "Move + Attack", "Attack", "Special"];
 /* Attribute, Threshold, Bonus, Move Applied */
 var classBonus = [
   [0, 14, +2, 2],
-  [4, 12, +2, 0],
+  [4, 12, +2, 0]
 ];
 var npcs = [["Joker", 20, "punch", 6, 2]];
 var initiative = ["player", "opponent", "critical"];
@@ -60,6 +64,8 @@ function roller(dice, numDice) {
   }
   return sum;
 }
+
+
 
 /* This function determines initiative at the start of melee */
 function determineInitiative() {
@@ -143,11 +149,11 @@ function attack() {
   story("What would you like to attack with?");
   choices = [
     "Punch",
-    "Batarang: (" + inventory[0][2][2] + " Remaining)",
-    "Smoke Pellets: (" + inventory[0][4][2] + " Remaining)",
-    "Impact Mines: (" + inventory[0][5][2] + " Remaining)",
-    "Sticky Glue Balls: (" + inventory[0][6][2] + " Remaining)",
-    "First-Aid Kit: (" + inventory[0][3][2] + " Remaining)",
+    "Batarang: (" + inventory[2][2] + " Remaining)",
+    "Smoke Pellets: (" + inventory[4][2] + " Remaining)",
+    "Impact Mines: (" + inventory[5][2] + " Remaining)",
+    "Sticky Glue Balls: (" + inventory[6][2] + " Remaining)",
+    "First-Aid Kit: (" + inventory[3][2] + " Remaining)",
   ];
   answer = setOptions(choices);
 }
@@ -246,38 +252,47 @@ function endMeleeAndSave() {
     });
 }
 
-/* Not Implemented */
-function nim() {
-  story("You won Nim");
-  choices = ["Great"];
-  answer = setOptions(choices);
-}
 
 function setup() {
-  story(
-    "You are on the top of Gotham Funland and you see the Joker planning something."
-  );
+  story("<i>For best Melee results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
   options = ["Confront Him", "~Wait and then Attack", "~Ask Robin"];
   setOptions(options);
   buttonElement.innerHTML = "What will you do?";
   buttonElement.setAttribute("onclick", "checkAnswers(dropdown.value)");
 }
 
+function toMelee() {
+  document.location = "melee.html";
+  story("<i>For best Story results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
+  choices = ["Confront Him", "~Wait then Attack", "~Ask Robin"];
+  answer = setOptions(choices);
+}
+
+
+function random() {
+  let sum = 0;
+  for (let roll = 1; roll <= 3; roll++) {
+    let rolled = Math.floor(Math.random() * 6) + 1;
+    sum += rolled;
+  }
+  return sum;
+}
+
 function pcAttack(att) {
-  if (inventory[0][att][2] > 0 || inventory[0][att][2] == null) {
-    if (inventory[0][att][2] != null) {
-      inventory[0][att][2] = inventory[0][att][2] - 1;
+  if (inventory[att][2] > 0 || inventory[att][2] == null) {
+    if (inventory[att][2] != null) {
+      inventory[att][2] = inventory[att][2] - 1;
     }
     let damage = 0;
-    let storyText = inventory[0][att][3] + "Joker";
+    let storyText = inventory[att][3] + "Joker";
     let attRoll = customRoll(20, 1);
     if (attRoll > 16) {
-      damage = customRoll(4, 1) + customRoll(4, 1) + inventory[0][att][1];
+      damage = customRoll(4, 1) + customRoll(4, 1) + inventory[att][1];
       storyText += ". Critical hit! You deal " + damage + " damage.";
     } else if (attRoll < 5) {
       storyText += ". You slip up and miss.";
     } else if (attRoll + stats[0][0] >= stats[1][1]) {
-      damage = customRoll(4, 1) + inventory[0][att][1];
+      damage = customRoll(4, 1) + inventory[att][1];
       storyText += ", dealing " + damage + " damage.";
     } else {
       storyText += ". Joker seems unphased.";
@@ -292,15 +307,25 @@ function pcAttack(att) {
   }
 }
 
+function critical() {
+  story(
+    "You and " +
+      npcs[0][0] +
+      " clash as if both of you expected an attack, You have to play a game of nim to settle this."
+  );
+  choices = ["Lets Settle This"];
+  answer = setOptions(choices);
+}
+
 function customRoll(range, min) {
   return Math.floor(Math.random() * range + min);
 }
 
 function attackId(answer) {
-  if (answer.includes("Batarang") && inventory[0][2][2] > 0) {
+  if (answer.includes("Batarang") && inventory[2][2] > 0) {
     pcAttack(2);
   }
-  if (answer.includes("First-Aid") && inventory[0][3][2] > 0) {
+  if (answer.includes("First-Aid") && inventory[3][2] > 0) {
     pcHeal();
   }
 }
@@ -330,11 +355,25 @@ function enemyAttack(att) {
 }
 
 function pcHeal() {
-  inventory[0][3][2] = inventory[0][3][2] - 1;
-  let heal = customRoll(3, 0) + inventory[0][3][1];
+  inventory[3][2] = inventory[3][2] - 1;
+  let heal = customRoll(3, 0) + inventory[3][1];
   story("You use a First-Aid kit and recover " + heal + " health.");
   hp[0] = hp[0] + heal;
   if (hp[0] > 30) hp[0] = 30;
   choices = ["Ok"];
   setOptions(choices);
+}
+
+function wait() {
+  story(
+    "You sat on the rafters with Robin undetected and listened to the Joker's plan."
+  );
+  choices = ["Chase Him", "Leave him", "Ask Robin"];
+  answer = setOptions(choices);
+}
+
+function robinJoker() {
+  alert(
+    "Robin: Hey Batman, I would wait and see what the Joker is up to, then we can fight him."
+  );
 }
