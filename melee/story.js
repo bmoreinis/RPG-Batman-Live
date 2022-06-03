@@ -34,7 +34,7 @@ function checkAnswers(answer) {
     case "Michael Keaton":
       toMelee();
       break;
-    case "Confront Him":
+    case "Confront Him!":
       determineInitiative();
       break;
     case "Move":
