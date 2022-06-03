@@ -27,8 +27,8 @@ function addImage(imageURL){
 }
 
 function setup() {
-  story("You are on the top of Gotham Funland and you see the Joker planning something.");
-  options=["Confront Him", "~Wait and then Attack", "~Ask Robin"];
+  story("<i>For best Story results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
+  options=["Confront Him!", "~Wait and then Attack", "~Ask Robin"];
   setOptions(options); 
   buttonElement.innerHTML = "What will you do?"; 
   buttonElement.setAttribute("onclick", "checkAnswers(dropdown.value)");
