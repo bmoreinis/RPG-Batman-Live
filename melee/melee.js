@@ -286,14 +286,9 @@ function pcAttack(att) {
     let attRoll = customRoll(20,1);
 // Critical if true
     if (attRoll > 17){
-      if (att == 0){
+      if (att == 0 || att == 1){
         actionWord();
       }
-      /* NOT WORKING
-      * if (att == 0 || att == 1){
-      *  actionWord();
-      * }
-      */ 
       damage = customRoll(4,1)+customRoll(4,1)+inventory[att][1];
       storyText+= ". Critical hit! You deal "+damage+" damage.";
     }
@@ -303,7 +298,7 @@ function pcAttack(att) {
     }
 // Hit if true
     else if (attRoll + stats[0][0] >= stats[1][1]){
-      if (att == 0){
+      if (att == 0 || att == 1){
         actionWord();
       }
       damage = customRoll(4,1)+inventory[att][1];
