@@ -65,7 +65,13 @@ function roller(dice, numDice) {
   return sum;
 }
 
-
+function setup() {
+  story("<i>For best Story results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
+  options=["Confront Him!", "~Wait and then Attack", "~Ask Robin"];
+  setOptions(options); 
+  buttonElement.innerHTML = "What will you do?"; 
+  buttonElement.setAttribute("onclick", "checkAnswers(dropdown.value)");
+}
 
 /* This function determines initiative at the start of melee */
 function determineInitiative() {
@@ -250,22 +256,6 @@ function endMeleeAndSave() {
     .fail(function (err) {
       console.log("saveGameCharacter(): ", err);
     });
-}
-
-
-function setup() {
-  story("<i>For best Melee results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
-  options = ["Confront Him", "~Wait and then Attack", "~Ask Robin"];
-  setOptions(options);
-  buttonElement.innerHTML = "What will you do?";
-  buttonElement.setAttribute("onclick", "checkAnswers(dropdown.value)");
-}
-
-function toMelee() {
-  document.location = "melee.html";
-  story("<i>For best Story results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
-  choices = ["Confront Him", "~Wait then Attack", "~Ask Robin"];
-  answer = setOptions(choices);
 }
 
 
