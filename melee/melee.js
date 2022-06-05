@@ -3,12 +3,45 @@ var choices = [];
 var modalText = "Houston, we have a problem defining modalText";
 // user attack, damage done, amount you can use, description
 // second punch is for move & attack - so lower damage
-var inventory = [["Punch", 5, null, "You punch "],["Punch", 3, null, "You punch "],["Batarang", 7, 3, "You throw a batarang at "],["First-Aid Kit", 4, 5],["Smoke Pellets", null, 2],["Impact Mines", 7, 3],["Sticky Glue Balls", null, 2]];
-var gold =  ["Gold", null, 50];
-// attack type, bonus damage, times used (null = infinite), story text, miss response (hit responses are standard). 
-var jokerInv = [["Punch", 1, null, "Joker throws a punch", ". You see it coming and dodge."],["Gun",3,6,"Joker fires his gun",". You block the bullet with your wrist."],["Taser",4,null,"Joker uses his taser",". You duck under your insulated cape."]];
+var inventory = [
+  ["Punch", 5, null, "You punch "],
+  ["Punch", 3, null, "You punch "],
+  ["Batarang", 7, 3, "You throw a batarang at "],
+  ["First-Aid Kit", 4, 5],
+  ["Smoke Pellets", null, 2],
+  ["Impact Mines", 7, 3],
+  ["Sticky Glue Balls", null, 2],
+];
+var gold = ["Gold", null, 50];
+// attack type, bonus damage, times used (null = infinite), story text, miss response (hit responses are standard).
+var jokerInv = [
+  ["Punch", 1, null, "Joker throws a punch", ". You see it coming and dodge."],
+  [
+    "Gun",
+    3,
+    6,
+    "Joker fires his gun",
+    ". You block the bullet with your wrist.",
+  ],
+  [
+    "Taser",
+    4,
+    null,
+    "Joker uses his taser",
+    ". You duck under your insulated cape.",
+  ],
+];
 // displayed during punches or kicks (kicks not implemented)
-var actionImages=["crack.jpg","kapow.jpg","oof.jpg","pow.jpg","smash.jpg","wham.jpg","zwap.jpg"];
+var actionImages = [
+  "crack.jpg",
+  "kapow.jpg",
+  "oof.jpg",
+  "pow.jpg",
+  "smash.jpg",
+  "wham.jpg",
+  "zwap.jpg",
+];
+
 // Airtable
 const pw = localStorage.getItem("pw");
 const key = "keyJLBdH3kt" + pw;
@@ -23,18 +56,18 @@ var attributes = [
   ["Wisdom", 0],
   ["Constitution", 0],
   ["Dexterity", 0],
-  ["Charisma", 0]
+  ["Charisma", 0],
 ];
 
 // TO DO: Look up which class is active, pull a custom attack or defense from the array below
 // and push that to the attack or defense array used.  Integrate that in melee messaging.
-var classAttacks= [
-  ["Christian Bale","The Dark Night", "One Punch Knockout"],
-  ["Robert Pattinson","Knows All The Answers"],
-  ["Michael Keaton","Predicts Villain Behaviors"],
+var classAttacks = [
+  ["Christian Bale", "The Dark Night", "One Punch Knockout"],
+  ["Robert Pattinson", "Knows All The Answers"],
+  ["Michael Keaton", "Predicts Villain Behaviors"],
   ["Will Arnett", "No Fall Damage"],
   ["Ben Affleck", "Can Escape Any Room"],
-  ["Kevin Conroy", "Soul Catching Voice"]
+  ["Kevin Conroy", "Soul Catching Voice"],
 ];
 
 /* Bonus only applies on move or attack, not move+attack */
@@ -43,10 +76,10 @@ var moves = ["Move", "Move + Attack", "Attack", "Special"];
 /* TO DO: Attribute, Threshold, Bonus, Move Applied */
 var classBonus = [
   [0, 14, +2, 2],
-  [4, 12, +2, 0]
+  [4, 12, +2, 0],
 ];
 // Non Player Characters: Name, HP, Attack, Armor Class, Hit Dice (2 = max 8 points)
-var npcs = [["Joker", 20, "punch", 6, 2],["Riddler",]];
+var npcs = [["Joker", 20, "punch", 6, 2], ["Riddler"]];
 // Not implemented
 var initiative = ["player", "opponent", "critical"];
 // This variable determines who attacks
@@ -69,10 +102,12 @@ function roller(dice, numDice) {
 }
 // Story starts here
 function setup() {
-  story("<i>For best Story results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something.");
-  options=["Confront Him!", "~Wait and then Attack", "~Ask Robin"];
-  setOptions(options); 
-  buttonElement.innerHTML = "What will you do?"; 
+  story(
+    "<i>For best Story results, play audio, top left.</i><br><br>You are on the top of Gotham Funland and you see the Joker planning something."
+  );
+  options = ["Confront Him!", "~Wait and then Attack", "~Ask Robin"];
+  setOptions(options);
+  buttonElement.innerHTML = "What will you do?";
   buttonElement.setAttribute("onclick", "checkAnswers(dropdown.value)");
 }
 
@@ -251,14 +286,17 @@ function endMeleeAndSave() {
   console.log("endMeleeAndSave():", hp[0]);
   const progressData = {
     fields: {
-      HP: 11,
+      HP: meleeGameProgress.HP,
+      AC: meleeGameProgress.AC,
+      Au: meleeGameProgress.Au,
     },
   };
- console.log("endMeleeAndSave:", progressData);
+  console.log("endMeleeAndSave:", progressData);
 
   buttonElement.innerHTML = "Saving game...";
   $.ajax({ url, type, data: progressData })
     .done(function (data) {
+      localStorage.removeItem("inMelee");
       window.close();
     })
     .fail(function (err) {
@@ -282,36 +320,36 @@ function pcAttack(att) {
       inventory[att][2] = inventory[att][2] - 1;
     }
     let damage = 0;
-    let storyText = inventory[att][3]+"Joker";
-    let attRoll = customRoll(20,1);
-// Critical if true
-    if (attRoll > 17){
-      if (att == 0 || att == 1){
+    let storyText = inventory[att][3] + "Joker";
+    let attRoll = customRoll(20, 1);
+    // Critical if true
+    if (attRoll > 17) {
+      if (att == 0 || att == 1) {
         actionWord();
       }
-      damage = customRoll(4,1)+customRoll(4,1)+inventory[att][1];
-      storyText+= ". Critical hit! You deal "+damage+" damage.";
+      damage = customRoll(4, 1) + customRoll(4, 1) + inventory[att][1];
+      storyText += ". Critical hit! You deal " + damage + " damage.";
     }
-// Miss if true
-    else if (attRoll < 3){
-      storyText+=". You slip up and miss.";
+    // Miss if true
+    else if (attRoll < 3) {
+      storyText += ". You slip up and miss.";
     }
-// Hit if true
-    else if (attRoll + stats[0][0] >= stats[1][1]){
-      if (att == 0 || att == 1){
+    // Hit if true
+    else if (attRoll + stats[0][0] >= stats[1][1]) {
+      if (att == 0 || att == 1) {
         actionWord();
       }
-      damage = customRoll(4,1)+inventory[att][1];
-      storyText+=", dealing "+damage+" damage.";
+      damage = customRoll(4, 1) + inventory[att][1];
+      storyText += ", dealing " + damage + " damage.";
     }
-// else means target is safe
-    else{
-      storyText+= ". Joker seems unphased.";
+    // else means target is safe
+    else {
+      storyText += ". Joker seems unphased.";
     }
-    if (att == 1){
-      storyText+=" You then move out of the way.";
-    } 
-    hp[1] = hp[1]-damage;
+    if (att == 1) {
+      storyText += " You then move out of the way.";
+    }
+    hp[1] = hp[1] - damage;
     story(storyText);
     choices = ["Ok"];
     setOptions(choices);
@@ -341,37 +379,34 @@ function attackId(answer) {
   }
 }
 // same as pcAttack but for joker
-function enemyAttack(att){
-  if (jokerInv[att][2] != null){
-      jokerInv[att][2] = jokerInv[att][2] - 1;
+function enemyAttack(att) {
+  if (jokerInv[att][2] != null) {
+    jokerInv[att][2] = jokerInv[att][2] - 1;
+  }
+  let damage = 0;
+  let storyText = jokerInv[att][3];
+  let attRoll = customRoll(20, 1);
+  if (attRoll > 18) {
+    if (att == 0) {
+      actionWord();
     }
-    let damage = 0;
-    let storyText = jokerInv[att][3];
-    let attRoll = customRoll(20,1);
-    if (attRoll > 18){
-      if (att == 0){
-        actionWord();
-      }
-      damage = customRoll(4,1)+customRoll(4,1)+jokerInv[att][1];
-      storyText+= ". Critical hit! You take "+damage+" damage.";
+    damage = customRoll(4, 1) + customRoll(4, 1) + jokerInv[att][1];
+    storyText += ". Critical hit! You take " + damage + " damage.";
+  } else if (attRoll < 3) {
+    storyText += ". He misses, destracted from laughing about something.";
+  } else if (attRoll + stats[1][0] >= stats[0][1]) {
+    if (att == 0) {
+      actionWord();
     }
-    else if (attRoll < 3){
-      storyText+=". He misses, destracted from laughing about something.";
-    }
-    else if (attRoll + stats[1][0] >= stats[0][1]){
-      if (att == 0){
-        actionWord();
-      }
-      damage = customRoll(4,1)+jokerInv[att][1];
-      storyText+=", dealing "+damage+" damage.";
-    }
-    else{
-      storyText+= jokerInv[att][4];
-    }
-    hp[0] = hp[0]-damage;
-    story(storyText);
-    choices = ["Ok"];
-    setOptions(choices);
+    damage = customRoll(4, 1) + jokerInv[att][1];
+    storyText += ", dealing " + damage + " damage.";
+  } else {
+    storyText += jokerInv[att][4];
+  }
+  hp[0] = hp[0] - damage;
+  story(storyText);
+  choices = ["Ok"];
+  setOptions(choices);
 }
 // Recover health if First-Aid kit is chosen
 function pcHeal() {
@@ -398,22 +433,24 @@ function robinJoker() {
   );
 }
 // Shows action word
-function actionWord(){
-  let imageId = customRoll(7,0);
+function actionWord() {
+  let imageId = customRoll(7, 0);
   //let batmanAudio = document.getElementById("batAudio");
   //batAudio.style.display = "none";
   actionMod = document.getElementById("actionModal");
-  actionMod.innerHTML = "<img id='word' src=fightwords/"+actionImages[imageId]+">";
+  actionMod.innerHTML =
+    "<img id='word' src=fightwords/" + actionImages[imageId] + ">";
   actionMod.style.display = "block";
-  let hide = setTimeout(hideWord,600);
+  let hide = setTimeout(hideWord, 600);
 }
 // Removes action word after 0.6 seconds
-function hideWord(){
+function hideWord() {
   actionMod.style.display = "none";
 }
 
 /* Canonical checkAnswer */
 function checkAnswers(answer) {
+  console.log("checkAnswers called");
   switch (answer) {
     case "Reroll":
       reroll();
@@ -448,7 +485,8 @@ function checkAnswers(answer) {
     case "Michael Keaton":
       toMelee();
       break;
-    case "Confront Him!":
+    case "Confront Him":
+      console.log("Calling determineInitiative() ...");
       determineInitiative();
       break;
     case "Move":
