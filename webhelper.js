@@ -33,6 +33,7 @@ var config = {
   START_GAME: "START_GAME",
   SELECT_CHARACTER: "SELECT_CHARACTER",
   ROLLING_CHARACTER: "ROLLING_CHARACTER",
+  IN_MELEE: "IN_MELEE",
   PLAY_GAME: "PLAY_GAME",
   GAME_OVER: "GAME_OVER",
   OPTION_NEW_GAME: "OPTION_NEW_GAME",
@@ -82,12 +83,22 @@ function handleClick() {
       break;
     case config.ROLLING_CHARACTER:
       if (localStorage.getItem("rollingChar")) {
+        console.log("ROLLING CHARACTER");
         doNothing();
       } else {
         console.log("Continuing game...");
         continueGame();
         // gameData.currentGameState = config.PLAY_GAME;
         // getScene(FINISH_CHAR_CREATION_ID);
+      }
+      break;
+    case config.IN_MELEE:
+      if (localStorage.getItem("inMelee")) {
+        console.log("IN MELEE");
+        doNothing();
+      } else {
+        console.log("Continuing game after melee...");
+        continueGame(true);
       }
       break;
     default:
